@@ -1,0 +1,62 @@
+01 Nro de compraobante interno                   C/I N§: [0002-00023109]
+02 Fecha comprobante                                        [24-04-2015]
+
+
+03 Cliente           CIPRES PLAX SRL (1693)
+04 Direccion         DR AMADEO SABATTINI 5572  04/1 telefono 155-9449488 04/01 Codigo Postal  1678    
+05 Localidad         CASEROS BUENOS AIRES      05/1 Cuit   30-70904318-4
+06 Tipo Cuit         Resp. Inscripto
+
+
+
+07 Condicion de Venta  CONTADO                Nro de Remito      [0002-00021404]
+
+08 Orden de Compra   ORDEN DE COMPRA: [                    ]
+
+
+
+09 Barra de Titulo  "C¢digo    Cant.             Descripci¢n               Precio x Millar   Importe"
+
+10 Cuempo del comprabante
+
+(Codigo   Cantidad Articulo                        Precio x millar       Importe)
+
+TUBO 018       350 TUBO PC 30X50 31CC C/TAPA  PE           1199,88        419,96
+TUBO 019       300 TUBO PC 30X60 38CC C/TAPA PE            1231,65        369,50
+TUBO 043       175 TUBO PC 41X56 68CC C/TAPA PE            1477,98        258,65
+PDF 05011      120 Pote d.f.50gr. rojo int.blanco          5069,40        608,33
+PDF 05008      120 Pote d.f.50gr.rosa int. blanco          5069,40        608,33
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     Subtotal  Desc. 5,00%   Subtotal  IVA INSC.21,00%  IVA NO INS 10,50%  Total
+
+     2.264,77   113,24       2.151,53         451,82                    2.603,35
+
+
+    Son Pesos $. 2603,35 DOS MIL SEISCIENTOS TRES CON 35/100
+
+
+

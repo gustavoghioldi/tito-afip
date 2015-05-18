@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:ws="http://www.mulesoft.org/schema/mule/ws" xmlns:data-mapper="http://www.mulesoft.org/schema/mule/ee/data-mapper" xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.6.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ws http://www.mulesoft.org/schema/mule/ws/current/mule-ws.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schema/mule/ee/data-mapper/current/mule-data-mapper.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+    <ws:consumer-config name="Web_Service_Consumer" wsdlLocation="https://wswhomo.afip.gov.ar/wsfev1/service.asmx?WSDL" service="Service" port="ServiceSoap12" serviceAddress="https://wswhomo.afip.gov.ar/wsfev1/service.asmx" doc:name="Web Service Consumer"/>
+    <flow name="afipFlow">
+        <file:inbound-endpoint path="/Users/admin/_marcos/projects/afip/input-folder" responseTimeout="10000" doc:name="File"/>
+        <component class="com.mnc.afip.TitoFacturaReader" doc:name="Java"/>
+
+
+        <logger message="#[payload.toString()]" level="ERROR"/>
+        <logger message="#[payload['HEADER']['CUIT']]" level="ERROR"/>
+        <logger message="#[payload['ITEMS'].size()]" level="ERROR"/>
+        <logger message="#[payload['ITEMS'][2]['IMPORTE']]" level="ERROR"/>
+
+<!--
+         <ws:consumer config-ref="Web_Service_Consumer" operation="FECAESolicitar" doc:name="Web Service Consumer"/>
+ -->
+     </flow>
+</mule>
