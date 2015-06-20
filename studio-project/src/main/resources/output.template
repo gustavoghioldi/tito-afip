@@ -1,0 +1,6 @@
+Resultado=#[payload.get('FECAESolicitarResponse/FECAESolicitarResult/FeDetResp/FECAEDetResponse/Resultado').asText()]
+CbteDesde=#[payload.get('FECAESolicitarResponse/FECAESolicitarResult/FeDetResp/FECAEDetResponse/CbteDesde').asText()]
+CAE=#[payload.get('FECAESolicitarResponse/FECAESolicitarResult/FeDetResp/FECAEDetResponse/CAE').asText()]
+CAEFchVto=#[payload.get('FECAESolicitarResponse/FECAESolicitarResult/FeDetResp/FECAEDetResponse/CAEFchVto').asText()]
+----------
+#[payload]

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project activeEnvironment="Default" name="afip auth" resourceRoot="" soapui-version="5.0.0" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="LoginCmsSoapBinding" type="wsdl" bindingName="{https://wsaahomo.afip.gov.ar/ws/services/LoginCms}LoginCmsSoapBinding" soapVersion="1_1" anonymous="optional" definition="https://wsaahomo.afip.gov.ar/ws/services/LoginCms?WSDL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="https://wsaahomo.afip.gov.ar/ws/services/LoginCms?WSDL"><con:part><con:url>https://wsaahomo.afip.gov.ar/ws/services/LoginCms?WSDL</con:url><con:content><![CDATA[<wsdl:definitions targetNamespace="https://wsaahomo.afip.gov.ar/ws/services/LoginCms" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="https://wsaahomo.afip.gov.ar/ws/services/LoginCms" xmlns:intf="https://wsaahomo.afip.gov.ar/ws/services/LoginCms" xmlns:tns1="http://wsaa.view.sua.dvadac.desein.afip.gov" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <!--WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)-->
+  <wsdl:types>
+    <schema elementFormDefault="qualified" targetNamespace="http://wsaa.view.sua.dvadac.desein.afip.gov" xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="https://wsaahomo.afip.gov.ar/ws/services/LoginCms"/>
+      <element name="loginCms">
+        <complexType>
+          <sequence>
+            <element name="in0" type="xsd:string"/>
+          </sequence>
+        </complexType>
+      </element>
+      <element name="loginCmsResponse">
+        <complexType>
+          <sequence>
+            <element name="loginCmsReturn" type="xsd:string"/>
+          </sequence>
+        </complexType>
+      </element>
+    </schema>
+    <schema elementFormDefault="qualified" targetNamespace="https://wsaahomo.afip.gov.ar/ws/services/LoginCms" xmlns="http://www.w3.org/2001/XMLSchema">
+      <complexType name="LoginFault">
+        <sequence/>
+      </complexType>
+      <element name="fault" type="impl:LoginFault"/>
+    </schema>
+  </wsdl:types>
+  <wsdl:message name="loginCmsResponse">
+    <wsdl:part element="tns1:loginCmsResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="LoginFault">
+    <wsdl:part element="impl:fault" name="fault"/>
+  </wsdl:message>
+  <wsdl:message name="loginCmsRequest">
+    <wsdl:part element="tns1:loginCms" name="parameters"/>
+  </wsdl:message>
+  <wsdl:portType name="LoginCMS">
+    <wsdl:operation name="loginCms">
+      <wsdl:input message="impl:loginCmsRequest" name="loginCmsRequest"/>
+      <wsdl:output message="impl:loginCmsResponse" name="loginCmsResponse"/>
+      <wsdl:fault message="impl:LoginFault" name="LoginFault"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="LoginCmsSoapBinding" type="impl:LoginCMS">
+    <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="loginCms">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="loginCmsRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="loginCmsResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="LoginFault">
+        <wsdlsoap:fault name="LoginFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="LoginCMSService">
+    <wsdl:port binding="impl:LoginCmsSoapBinding" name="LoginCms">
+      <wsdlsoap:address location="https://wsaahomo.afip.gov.ar/ws/services/LoginCms"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>https://wsaahomo.afip.gov.ar/ws/services/LoginCms</con:endpoint></con:endpoints><con:operation isOneWay="false" action="" name="loginCms" bindingOperationName="loginCms" type="Request-Response" outputName="loginCmsResponse" inputName="loginCmsRequest" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>https://wsaahomo.afip.gov.ar/ws/services/LoginCms</con:endpoint><con:request>&lt;soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+   &lt;soapenv:Body/>
+&lt;/soapenv:Envelope></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="https://wsaahomo.afip.gov.ar/ws/services/LoginCms/LoginCMS/loginCmsRequest"/><con:wsrmConfig version="1.2"/></con:call><con:call name="Request 2"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>https://wsaahomo.afip.gov.ar/ws/services/LoginCms</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wsaa="http://wsaa.view.sua.dvadac.desein.afip.gov"><soapenv:Header/><soapenv:Body><wsaa:loginCms><wsaa:in0>MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAaCAJIAEggG8PD94
+bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/Pjxsb2dp
+blRpY2tldFJlcXVlc3QgdmVyc2lvbj0iMS4wIj48aGVhZGVyPjxzb3VyY2U+Qz1BUiwgTz1tbmMs
+IFNFUklBTE5VTUJFUj1DVUlUIDIwMjYwNzkyMTA2LCBDTj1tbmM8L3NvdXJjZT48ZGVzdGluYXRp
+b24+Y249d3NhYWhvbW8sbz1hZmlwLGM9YXIsc2VyaWFsTnVtYmVyPUNVSVQgMzM2OTM0NTAyMzk8
+L2Rlc3RpbmF0aW9uPjx1bmlxdWVJZD4xNDMzNzE3MjI0PC91bmlxdWVJZD48Z2VuZXJhdGlvblRp
+bWU+MjAxNS0wNi0wN1QxOTo0NzowNC0wMzowMDwvZ2VuZXJhdGlvblRpbWU+PGV4cGlyYXRpb25U
+aW1lPjIwMTUtMDYtMDdUMjA6MTc6MDQtMDM6MDA8L2V4cGlyYXRpb25UaW1lPjwvaGVhZGVyPjxz
+ZXJ2aWNlPndzZmU8L3NlcnZpY2U+PC9sb2dpblRpY2tldFJlcXVlc3Q+AAAAAAAAoIAwggOmMIIC
+jqADAgECAghssNSJyfT2EjANBgkqhkiG9w0BAQUFADBDMSUwIwYDVQQDDBxBRklQIFRlc3Rpbmcg
+Q29tcHV0YWRvcmVzIENBMQ0wCwYDVQQKDARBRklQMQswCQYDVQQGEwJBUjAeFw0xNTA2MDcwMDQ1
+MDBaFw0xODAzMDMwMDQ1MDBaMEQxDDAKBgNVBAMMA21uYzEZMBcGA1UEBRMQQ1VJVCAyMDI2MDc5
+MjEwNjEMMAoGA1UECgwDbW5jMQswCQYDVQQGEwJBUjCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkC
+gYEAx9LUAnW/sqpuc+5pCWGzxuDi/mZDO8xGlQkfA7XdZU4945ue2ZIWR5NM6XkiFCITFe6EoQif
+3VwASD4B715ubs3Vu8oqeE87HccFBlY88i2sBZUdOOkSw9XlGzdVY6DK9N+1oJl4pRMha9eb2pYJ
+rVkdyMaMcixP+NRJ8pIysDMCAwEAAaOCAR8wggEbMAwGA1UdEwEB/wQCMAAwDgYDVR0PAQH/BAQD
+AgXgMB0GA1UdDgQWBBQkwSCaJFrRkEDNSRfL2Ix4SCy7kjAfBgNVHSMEGDAWgBREdO60nCbfVuHB
+DetXC5AZNj2WATCBugYDVR0gBIGyMIGvMIGsBg4rBgEEAYG7YwECAQIBATCBmTCBlgYIKwYBBQUH
+AgIwgYkegYYAQwBlAHIAdABpAGYAaQBjAGEAZABvACAAcABhAHIAYQAgAGMAbwBtAHAAdQB0AGEA
+ZABvAHIAZQBzACAAcwBvAGwAbwAgAHYAYQBsAGkAZABvACAAZQBuACAAZQBuAHQAbwByAG4AbwBz
+ACAAZABlACAAZABlAHMAYQByAHIAbwBsAGwAbzANBgkqhkiG9w0BAQUFAAOCAQEAi6uZ1fAwbeDA
+pQnCtwFGynKhsuRprc5WoVhBjdH+StO4Dq251PhG/2Z/hNXE/gNeyYjxFmBoz553elfF9w6wtItg
+1F8VyGWydvU5i7CrxTmjaBt7GPUEGMN7HeZeDe1RjDpniHOcavTx7yt8ItqDb7z5VKOmg+zyZpqY
+LoEWHRw5kMa0Kf/ww8M39QeQ1FVBqtzwAO2CfI9vxn2kRVfH/dxPGE1mN43ZUycdZfq12nE535fQ
+A/wRVyS6/yrGyV3FWeybpN7G1aBhvGTEMD7jB14oQ0jWKU7IoS2ko8C/1uycCRdx6huxv35G/fGF
+NnGxPs3PqsSppuf86/MpsKJjPgAAMYIBVDCCAVACAQEwTzBDMSUwIwYDVQQDDBxBRklQIFRlc3Rp
+bmcgQ29tcHV0YWRvcmVzIENBMQ0wCwYDVQQKDARBRklQMQswCQYDVQQGEwJBUgIIbLDUicn09hIw
+CQYFKw4DAhoFAKBdMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTE1
+MDYwNzIyNDcwNFowIwYJKoZIhvcNAQkEMRYEFMJEmP6W8BM4iCSzrabIANaoUJ8HMA0GCSqGSIb3
+DQEBAQUABIGApe93pUvNbUcumnnIABJ0RCG2b1Nm24wn2wRFUoSIh6Vm1eP6uiBLwkOxzGF0+7Lj
+CVY62PTv+V7l38jqXI6AVM+ww/4kYR1W9iPvwMKUcf1y+bGZtEPU54PuIgYCOr88Zxs6pD7CdlBz
+dX5u9rIKNFrRBufIZKpRTmIq+Si8Dj4AAAAAAAA=</wsaa:in0></wsaa:loginCms></soapenv:Body></soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="https://wsaahomo.afip.gov.ar/ws/services/LoginCms/LoginCMS/loginCmsRequest"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/></con:soapui-project>

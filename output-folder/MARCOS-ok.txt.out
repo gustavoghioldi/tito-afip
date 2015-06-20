@@ -1,0 +1,6 @@
+Resultado=A
+CbteDesde=24
+CAE=65256262747762
+CAEFchVto=20150629
+----------
+{"FECAESolicitarResponse":{"@xmlns:xsd":"http://www.w3.org/2001/XMLSchema","@xmlns:xsi":"http://www.w3.org/2001/XMLSchema-instance","@xmlns:xmlns":"http://ar.gov.afip.dif.FEV1/","FECAESolicitarResult":{"FeCabResp":{"Cuit":"20260792106","PtoVta":"2","CbteTipo":"1","FchProceso":"20150619225453","CantReg":"1","Resultado":"A","Reproceso":"N"},"FeDetResp":{"FECAEDetResponse":{"Concepto":"1","DocTipo":"80","DocNro":"30709043184","CbteDesde":"24","CbteHasta":"24","CbteFch":"20150619","Resultado":"A","CAE":"65256262747762","CAEFchVto":"20150629"}}}}}

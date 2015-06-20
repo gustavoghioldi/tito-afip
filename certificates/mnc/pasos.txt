@@ -1,0 +1,15 @@
+https://sites.google.com/site/facturaelectronicax/Home/version-full/como-usar/certificado-digital/certificados-resumen/certificado-fiscal-afip-de-prueba
+
+openssl genrsa -out privada 1024
+
+openssl req -new -key privada -subj "/C=AR/O=mnc/CN=mnc/serialNumber=CUIT 20260792106" -out pedido
+
+openssl pkcs12 -export -out mnc.pfx -inkey privada -in mnc.crt -name mnc
+
+(password 123456)
+
+
+otros links
+
+https://sites.google.com/site/facturaelectronicax/Home/version-full/como-usar/certificado-digital/certificados-resumen
+https://sites.google.com/site/facturaelectronicax/Home/version-full/como-usar/certificado-digital/certificados-resumen/guia-certificado-digital

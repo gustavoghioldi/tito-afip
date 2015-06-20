@@ -1,4 +1,4 @@
-package com.mnc.afip;
+package com.mnc.afip.tito;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.Scanner;
 import org.mule.api.MuleEventContext;
 import org.mule.api.lifecycle.Callable;
 
-public class TitoFacturaReader implements Callable {
+public class TitoFacturaReaderUsingMaps implements Callable {
 
 	@Override
 	public Object onCall(MuleEventContext eventContext) throws Exception {

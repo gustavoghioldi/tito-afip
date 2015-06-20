@@ -1,27 +1,142 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:ws="http://www.mulesoft.org/schema/mule/ws" xmlns:data-mapper="http://www.mulesoft.org/schema/mule/ee/data-mapper" xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.6.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" version="CE-3.6.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:spring="http://www.springframework.org/schema/beans"
+xmlns:json="http://www.mulesoft.org/schema/mule/json" 
+xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml" 
+xmlns:http="http://www.mulesoft.org/schema/mule/http" 
+xmlns:ws="http://www.mulesoft.org/schema/mule/ws" 
+xmlns:file="http://www.mulesoft.org/schema/mule/file" 
+xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ws http://www.mulesoft.org/schema/mule/ws/current/mule-ws.xsd
 http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
-http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schema/mule/ee/data-mapper/current/mule-data-mapper.xsd
-http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
-    <ws:consumer-config name="Web_Service_Consumer" wsdlLocation="https://wswhomo.afip.gov.ar/wsfev1/service.asmx?WSDL" service="Service" port="ServiceSoap12" serviceAddress="https://wswhomo.afip.gov.ar/wsfev1/service.asmx" doc:name="Web Service Consumer"/>
-    <flow name="afipFlow">
-        <file:inbound-endpoint path="/Users/admin/_marcos/projects/afip/input-folder" responseTimeout="10000" doc:name="File"/>
-        <component class="com.mnc.afip.TitoFacturaReader" doc:name="Java"/>
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+">
+    <spring:beans>
+        <spring:bean id="authTokenCache" class="com.mnc.afip.tito.AuthTokenCache"/>
+        <spring:bean id="Tito2AfipConverter" class="com.mnc.afip.tito.Tito2AfipConverter">
+        	<spring:property name="authTokenCache" ref="authTokenCache"/>
+        </spring:bean>
+    </spring:beans>
 
+    <!-- AFIP WS config -->
+    <ws:consumer-config 
+    	name="WSC_AFIP_Auth" 
+    	serviceAddress="${ws.auth.serviceAddress}" 
+    	wsdlLocation="${ws.auth.serviceAddress}?WSDL" 
+    	service="LoginCMSService" 
+    	port="LoginCms" 
+    	doc:name="AFIP Auth Config"/>
+    <ws:consumer-config 
+    	name="WSC_AFIP_FE" 
+    	serviceAddress="${ws.fe.serviceAddress}" 
+    	wsdlLocation="${ws.fe.serviceAddress}?WSDL" 
+    	service="Service" 
+    	port="ServiceSoap12" 
+    	doc:name="AFIP FE Config"/>
 
-        <logger message="#[payload.toString()]" level="ERROR"/>
-        <logger message="#[payload['HEADER']['CUIT']]" level="ERROR"/>
-        <logger message="#[payload['ITEMS'].size()]" level="ERROR"/>
-        <logger message="#[payload['ITEMS'][2]['IMPORTE']]" level="ERROR"/>
+    <!-- Sub-Flow to obtain AFIP Auth credentials -->
+    <sub-flow name="call-cms-login" >
+        <choice doc:name="Check cache">
+            <when expression="#[!app.registry.authTokenCache.isValid()]">
+		        <set-variable variableName="payloadBackup" value="#[payload]" doc:name="Preserve Payload" />
+				<logger level="INFO" message="Calling WS Auth Service" doc:name="Logger"/>        
+		        <component class="com.mnc.afip.tito.CreateLoginTicketRequest" doc:name="Create Login Ticket Request"/>
+		        <ws:consumer config-ref="WSC_AFIP_Auth" operation="loginCms" doc:name="Call AFIP Auth WS"/>
+		        <json:xml-to-json-transformer doc:name="XML to JSON"/>
+		        <json:json-to-object-transformer doc:name="JSON to Object"/>
+		        <component class="com.mnc.afip.tito.ParseLoginTicketResponse" doc:name="Parse Auth Response"/>
+				<expression-component doc:name="Set cache"><![CDATA[app.registry.authTokenCache.setAuthToken(sessionVars.token, sessionVars.sign, ${cuit}, sessionVars.expirationTime)]]></expression-component>
+		        <set-payload value="#[flowVars.payloadBackup]" doc:name="Restore Payload" />
+            </when>
+            <otherwise>
+                <logger level="INFO" message="Taking auth token from cache." doc:name="Logger"/>
+            </otherwise>
+        </choice>
+	</sub-flow>
+	
+    <!-- Sub-Flow to obtain last receipt -->
+    <sub-flow name="call-approved-last-receipt" >
+		<logger level="INFO" message="Calling Next Receipt Service" doc:name="Logger"/>        
+        <set-variable variableName="payloadBackup" value="#[payload]" doc:name="Preserve Payload" />
+        <component class="com.mnc.afip.tito.CreateLastReceiptRequest" doc:name="Create Last Receipt Request"/>
+        
+        <mulexml:object-to-xml-transformer doc:name="Object to XML" >
+            <mulexml:alias name="FECompUltimoAutorizado" class="com.mnc.afip.ws.FECompUltimoAutorizado"/>
+        </mulexml:object-to-xml-transformer>
+        <component class="com.mnc.afip.tito.ArNamespaceAdder" doc:name="Add ar namespace"/>
+        
+        <ws:consumer config-ref="WSC_AFIP_FE" operation="FECompUltimoAutorizado" doc:name="Web Service Consumer"/>
+        <json:xml-to-json-transformer doc:name="XML to JSON"/>
+        <json:json-to-object-transformer doc:name="JSON to Object"/>
+        
+        <set-variable variableName="CbteNro" value="#[payload.get('FECompUltimoAutorizadoResponse/FECompUltimoAutorizadoResult/CbteNro').asLong()+1]" doc:name="Take CbteNro from JSON" />
+        
+		<expression-component doc:name="Set cache"><![CDATA[flowVars.payloadBackup.getHeader().setNroCbte(flowVars.CbteNro)]]></expression-component>
+        
+        <set-payload value="#[flowVars.payloadBackup]" doc:name="Restore Payload" />
+	</sub-flow>
+	
+	
+    <!-- FE Flows -->
+    <flow name="ask-fe">
+        <file:inbound-endpoint path="${input.folder}" responseTimeout="10000" doc:name="Read file receipt"/>
+        <set-variable variableName="originalFilename" value="#[message.inboundProperties['originalFilename']]" doc:name="Keep original file name" />
+        
+        <component class="com.mnc.afip.tito.TitoFacturaReader" doc:name="Convert 2 Factura"/>
 
-<!--
-         <ws:consumer config-ref="Web_Service_Consumer" operation="FECAESolicitar" doc:name="Web Service Consumer"/>
- -->
+        <set-session-variable variableName="p12File" value="${auth.p12file}" doc:name="Session Variable - p12File"/>
+        <set-session-variable variableName="p12pass" value="${auth.p12pass}" doc:name="Session Variable - p12pass"/>
+        <set-session-variable variableName="signer"  value="${auth.signer}"  doc:name="Session Variable - signer"/>
+        <flow-ref name="call-cms-login" doc:name="Ensure Auth Data"/>
+		
+        <flow-ref name="call-approved-last-receipt" doc:name="Retrieve last receipt"/>
+
+		<auto-transformer returnClass="com.mnc.afip.ws.FECAESolicitar" doc:name="Convert to AFIP format"/>
+
+        <mulexml:object-to-xml-transformer doc:name="Object to XML" >
+            <mulexml:alias name="FECAESolicitar" class="com.mnc.afip.ws.FECAESolicitar"/>
+            <mulexml:alias name="FECAEDetRequest" class="com.mnc.afip.ws.FECAEDetRequest"/>
+            <mulexml:alias name="AlicIva" class="com.mnc.afip.ws.AlicIva"/>
+        </mulexml:object-to-xml-transformer>
+        <component class="com.mnc.afip.tito.ArNamespaceAdder" doc:name="Add ar namespace"/>
+    
+        <ws:consumer config-ref="WSC_AFIP_FE" operation="FECAESolicitar" doc:name="Call FECAESolicitar WS"/>
+        
+		<json:xml-to-json-transformer doc:name="XML to JSON"/>
+        <json:json-to-object-transformer doc:name="JSON to Object"/>
+        
+        <parse-template location="${template}" doc:name="Parse Template"/>
+        <file:outbound-endpoint responseTimeout="10000" doc:name="File" outputPattern="#[flowVars.originalFilename].out" path="${output.folder}"/>        
      </flow>
+	
+    
+	<!-- ====================================================================== -->
+	<!-- TEST FLOWS -->
+	<!-- ====================================================================== -->
+    <http:listener-config name="HTTP_Listener_Configuration" host="${test.http.host}" port="${test.http.port}" doc:name="Test HTTP Listener Configuration"/>
+	
+    <!-- Authentication Test -->
+    <flow name="test-auth" >
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/auth" doc:name="Test Auth" />
+        <set-session-variable variableName="p12File" value="${auth.p12file}" doc:name="Session Variable - p12File"/>
+        <set-session-variable variableName="p12pass" value="${auth.p12pass}" doc:name="Session Variable - p12pass"/>
+        <set-session-variable variableName="signer"  value="${auth.signer}"  doc:name="Session Variable - signer"/>
+        <flow-ref name="call-cms-login" doc:name="Flow Reference"/>
+        <set-payload doc:name="Set Payload" value="#[app.registry.authTokenCache.getAuthToken().getToken()]" />        
+    </flow>
+
+    <!-- Last approved receipt Test -->
+    <flow name="test-ultimo" >
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/last" doc:name="Test Last" />
+        <!-- TODO: Ver qué hay que mandarle a este servicio -->
+        <flow-ref name="call-approved-last-receipt" doc:name="Flow Reference"/>
+    </flow>
+
+
 </mule>
